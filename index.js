@@ -61,7 +61,7 @@ async function main() {
     )
     matchingVersions = matchingVersions.concat(versions)
   }
-  core.info(`Found ${matchingVersions.length} matching versions`)
+  core.info(`Found ${matchingVersions.length} versions that match '${packageVersionPattern}' in repo ${repo} for ${allPackages.length} matched packages`)
   let encounteredError = false;
   //delete the versions that we matched
   for (let i = 0; i < matchingVersions.length; i++) {

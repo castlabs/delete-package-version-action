@@ -9598,7 +9598,7 @@ async function main() {
     )
     matchingVersions = matchingVersions.concat(versions)
   }
-  _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Found ${matchingVersions.length} matching versions`)
+  _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Found ${matchingVersions.length} versions that match '${packageVersionPattern}' in repo ${repo} for ${allPackages.length} matched packages`)
   let encounteredError = false;
   //delete the versions that we matched
   for (let i = 0; i < matchingVersions.length; i++) {

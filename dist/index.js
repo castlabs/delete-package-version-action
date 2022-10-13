@@ -9577,7 +9577,7 @@ async function main() {
   const packageNameMatcher = new RegExp(packageNamePattern)
   const packageVersionMatcher = new RegExp(packageVersionPattern)
   const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token)
-  _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Searching for packages in ${repo} that match the name-pattern: '${packageNamePattern}' and version-pattern: ${packageVersionPattern}`)
+  _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Searching for packages in ${repo} that match the name-pattern: '${packageNamePattern}' and version-pattern: ${packageVersionPattern} with package-type: ${packageType}`)
 
   // list packages for repo to find all packages that match the package name
   // pattern and belong to this repo

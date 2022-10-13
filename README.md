@@ -6,22 +6,22 @@ specified patterns.
 
 ## Inputs
 
-## `name`
+### `name`
 
 **Required** A regular expression that matches against the name of the
 package.
 
-## `version`
+### `version`
 
 **Required** A regular expression that is matched against the name of the
 version that is being searched for, i.e. `^1.0.0-SNAPSHOT$` for an exact match
 or `.*-SNAPSHOT` for all snapshots.
 
-## `type`
+### `type`
 
 **Required** The package type, i.e. npm or maven etc.
 
-## `token`
+### `token`
 
 The access to token. The token must have permissions to read/write/delete 
 packages. Defaults to github.token.

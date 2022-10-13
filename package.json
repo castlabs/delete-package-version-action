@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "ncc build index.js --license LICENSE.txt"
+    "build": "ncc build index.js --license LICENSE"
   },
   "keywords": [],
   "author": "Thasso Griebel",

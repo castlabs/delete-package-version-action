@@ -1,0 +1,22 @@
+name: 'Delete Package Versions'
+description: 'Finds and deletes package version'
+inputs:
+  name:
+    description: 'A regular expression that is matched against the name of the package'
+    required: true
+  version:
+    description: 'A regular expression that is matched against the name of the version'
+    required: true
+  type:
+    description: 'The package type. For instance, npm or maven'
+    required: true
+  token:
+    description: >
+      Token with the necessary scopes to read package versions. 
+      Defaults to github.token scoped to the repo running the action.
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

@@ -9542,7 +9542,7 @@ var __webpack_exports__ = {};
 
 function filterPackages(res, repo, nameMatcher) {
   return res.data
-    .filter(d => d.repository.name === repo)
+    .filter(d => !d.repository || d.repository.name === repo)
     .filter(d => nameMatcher.test(d.name))
     .map(d => {
       return {name: d.name, count: d.version_count}

@@ -9613,7 +9613,21 @@ async function main() {
       })
     }catch (e) {
       _actions_core__WEBPACK_IMPORTED_MODULE_0__.error(`'Error while trying to delete Name: ${v.name} Version: ${v.version} Id: ${v.id}: ${e.message}`)
-      encounteredError = true
+      if (e.message == "You cannot delete the last version of a package. You must delete the package instead.") {
+        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Deleting package instead of just the last version")
+        try {
+          await octokit.request('DELETE /orgs/{org}/packages/{package_type}/{package_name}', {
+            package_type: packageType,
+            package_name: v.name,
+            org: owner,
+          })
+        }catch (e) {
+          _actions_core__WEBPACK_IMPORTED_MODULE_0__.error(`'Error while trying to deleting package: ${e.message}`)
+          encounteredError = true
+        }
+      } else {
+        encounteredError = true
+      }
     }
   }
   if(encounteredError) {

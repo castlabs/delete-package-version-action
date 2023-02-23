@@ -9549,11 +9549,29 @@ function filterPackages(res, repo, nameMatcher) {
     })
 }
 
-function filterVersions(res, pkgName, versionMatcher) {
+function filterVersions(res, pkgName, versionMatcher, tagMatcher, untagged) {
   return res.data
     .filter(d => versionMatcher.test(d.name))
     .map(d => {
-      return {name: pkgName, version: d.name, id: d.id}
+      let tags = ""
+      if(d.metadata && d.metadata.container && d.metadata.container.tags) {
+        tags = d.metadata.container.tags.join(",")
+      }
+      return {name: pkgName, version: d.name, id: d.id, tags: tags}
+    })
+    .filter(d => {
+      if (untagged && !d.tags) {
+        return true;
+      } else if(untagged) {
+        return false;
+      }
+
+      if (tagMatcher) {
+        return tagMatcher.test(d.tags)
+      } else {
+        return true
+      }
+
     })
 }
 
@@ -9562,6 +9580,9 @@ async function main() {
   const packageVersionPattern = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('version') || process.env.PKG_VERSION_PATTERN;
   const packageType = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('type') || process.env.PKG_TYPE;
   const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token') || process.env.GITHUB_TOKEN;
+  const tag = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('tag') || process.env.TAG;
+  const untagged = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
+
   const {owner, repo} = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo
 
   if (!packageVersionPattern) {
@@ -9576,6 +9597,7 @@ async function main() {
 
   const packageNameMatcher = new RegExp(packageNamePattern)
   const packageVersionMatcher = new RegExp(packageVersionPattern)
+  const tagMatcher = tag ? new RegExp(tag) : null
   const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token)
   _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Searching for packages in ${repo} owned by ${owner} that match the name-pattern: '${packageNamePattern}' and version-pattern: '${packageVersionPattern}' with package-type: '${packageType}'`)
 
@@ -9585,7 +9607,12 @@ async function main() {
     { org: owner, package_type: packageType },
     (res) => filterPackages(res, repo, packageNameMatcher)
   )
+
+  for (let allPackagesKey in allPackages) {
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug("Matched Package: " + allPackagesKey + " " + JSON.stringify(allPackages[allPackagesKey]))
+  }
   _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Found ${allPackages.length} packages that match '${packageNamePattern}' in repo ${repo}`)
+
 
   // Find all the version in the packages that match the
   // version pattern
@@ -9594,11 +9621,15 @@ async function main() {
     let pkg = allPackages[i];
     let versions = await octokit.paginate('GET /orgs/{org}/packages/{package_type}/{package_name}/versions',
       {package_type: packageType, package_name: pkg.name, org: owner},
-      (res) => filterVersions(res, pkg.name, packageVersionMatcher)
+      (res) => filterVersions(res, pkg.name, packageVersionMatcher, tagMatcher, untagged)
     )
     matchingVersions = matchingVersions.concat(versions)
   }
+  matchingVersions.forEach(version => {
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.debug("Matched version " + JSON.stringify(version))
+  })
   _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`Found ${matchingVersions.length} versions that match '${packageVersionPattern}' in repo ${repo} for ${allPackages.length} matched packages`)
+
   let encounteredError = false;
   //delete the versions that we matched
   for (let i = 0; i < matchingVersions.length; i++) {
@@ -9613,7 +9644,7 @@ async function main() {
       })
     }catch (e) {
       _actions_core__WEBPACK_IMPORTED_MODULE_0__.error(`'Error while trying to delete Name: ${v.name} Version: ${v.version} Id: ${v.id}: ${e.message}`)
-      if (e.message == "You cannot delete the last version of a package. You must delete the package instead.") {
+      if (e.message === "You cannot delete the last version of a package. You must delete the package instead.") {
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Deleting package instead of just the last version")
         try {
           await octokit.request('DELETE /orgs/{org}/packages/{package_type}/{package_name}', {

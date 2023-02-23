@@ -10,6 +10,13 @@ inputs:
   type:
     description: 'The package type. For instance, npm or maven'
     required: true
+  tag:
+    description: 'A regular expression that is matched against the version tag'
+    required: false
+  untagged:
+    description: 'Delete untagged versions'
+    required: false
+    default: "false"
   token:
     description: >
       Token with the necessary scopes to read package versions. 

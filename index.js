@@ -5,7 +5,7 @@ import {paginateRest, composePaginateRest} from "@octokit/plugin-paginate-rest"
 
 function filterPackages(res, repo, nameMatcher) {
   return res.data
-    .filter(d => !d.repository || d.repository.name === repo)
+    .filter(d => (!repo && !d.repository) || d.repository.name === repo)
     .filter(d => nameMatcher.test(d.name))
     .map(d => {
       return {name: d.name, count: d.version_count}

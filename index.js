@@ -5,7 +5,10 @@ import {paginateRest, composePaginateRest} from "@octokit/plugin-paginate-rest"
 
 function filterPackages(res, repo, nameMatcher) {
   return res.data
-    .filter(d => d.repository && d.repository.name === repo)
+    .filter(d => {
+      if (!d.repository) return false;
+      return d.repository.name === repo
+    })
     .filter(d => nameMatcher.test(d.name))
     .map(d => {
       return {name: d.name, count: d.version_count}
@@ -44,7 +47,7 @@ async function main() {
   const packageType = core.getInput('type') || process.env.PKG_TYPE;
   const token = core.getInput('token') || process.env.GITHUB_TOKEN;
   const tag = core.getInput('tag') || process.env.TAG;
-  const untagged = core.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
+  const untagged = true; //core.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
 
   const {owner, repo} = github.context.repo
 

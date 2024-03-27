@@ -47,7 +47,7 @@ async function main() {
   const packageType = core.getInput('type') || process.env.PKG_TYPE;
   const token = core.getInput('token') || process.env.GITHUB_TOKEN;
   const tag = core.getInput('tag') || process.env.TAG;
-  const untagged = true; //core.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
+  const untagged = core.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
 
   const {owner, repo} = github.context.repo
 

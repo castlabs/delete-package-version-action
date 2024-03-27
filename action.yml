@@ -18,12 +18,9 @@ inputs:
     required: false
     default: "false"
   token:
-    description: >
-      Token with the necessary scopes to read package versions. 
-      Defaults to github.token scoped to the repo running the action.
-    required: false
-    default: ${{ github.token }}
+    description: 'Token with the necessary scopes to read package versions.'
+    required: true
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

@@ -23,8 +23,8 @@ or `.*-SNAPSHOT` for all snapshots.
 
 ### `token`
 
-The access to token. The token must have permissions to read/write/delete 
-packages. Defaults to github.token.
+**Required** The access to token. The token must have permissions to read/write/delete
+packages in the whole organization.
 
 ### `tag`
 
@@ -38,19 +38,21 @@ for deletion.
 ## Example usage
 
 ```
-- uses: castlabs/delete-package-version-action@v1.0
+- uses: castlabs/delete-package-version-action@v1.3
   with:
     name: ".*"
     version: "1.0-SNAPSHOT"
     type: "maven"
+    token: ${{ secrets.CLPLAYERS_FULL_PACKAGE_FULL_REPO }}
 ```
 
 Delete all untagged containers
 ```
-- uses: castlabs/delete-package-version-action@v1.0
+- uses: castlabs/delete-package-version-action@v1.3
   with:
     name: ".*"
     version: ".*"
     type: "container"
     untagged: true
+    token: ${{ secrets.CLPLAYERS_FULL_PACKAGE_FULL_REPO }}
 ```

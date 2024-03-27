@@ -30758,7 +30758,7 @@ async function main() {
   const packageType = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('type') || process.env.PKG_TYPE;
   const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('token') || process.env.GITHUB_TOKEN;
   const tag = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('tag') || process.env.TAG;
-  const untagged = true; //core.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
+  const untagged = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput('untagged', {required: false}) || process.env.UNTAGGED === 'true';
 
   const {owner, repo} = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo
 
